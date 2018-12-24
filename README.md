@@ -1,0 +1,3 @@
+# scaladoc-coverage
+
+WIP
