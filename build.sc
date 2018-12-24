@@ -4,7 +4,9 @@ import mill.scalalib.scalafmt.ScalafmtModule
 import mill.util.Loose
 import scalalib._
 
-object core extends Cross[CoreModule]("2.11.12", "2.12.8")
+val scalaVersions = List("2.11.12", "2.12.8")
+
+object core extends Cross[CoreModule](scalaVersions: _*)
 class CoreModule(crossVersion: String) extends CrossScalaModule with ScalafmtModule {
   override def crossScalaVersion = crossVersion
 
@@ -17,4 +19,8 @@ class CoreModule(crossVersion: String) extends CrossScalaModule with ScalafmtMod
     override def ivyDeps = Agg(ivy"com.lihaoyi::utest:0.6.0")
     def testFrameworks = Seq("utest.runner.Framework")
   }
+}
+
+def unitTest(scalaVersion: String = sys.env("TRAVIS_SCALA_VERSION")) = T.command {
+  core(scalaVersion).test.test()
 }

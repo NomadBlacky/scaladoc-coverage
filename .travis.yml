@@ -1,0 +1,29 @@
+language: scala
+
+matrix:
+  include:
+
+  - jdk: oraclejdk8
+    scala: 2.11.12
+
+  - jdk: oraclejdk8
+    scala: 2.12.8
+
+  - jdk: openjdk11
+    scala: 2.11.12
+
+  - jdk: openjdk11
+    scala: 2.12.8
+
+script:
+- unset _JAVA_OPTIONS
+- unset JVM_OPTS
+- unset SBT_OPTS
+- export PATH=~/bin/amm:~/bin/mill:$PATH
+- mkdir -p ~/bin
+- if [ ! -f ~/bin/mill-0.3.3 ]; then sudo sh -c '(echo "#!/usr/bin/env sh" && curl -L https://github.com/lihaoyi/mill/releases/download/0.3.5/0.3.5) > ~/bin/mill-0.3.5 && chmod +x ~/bin/mill-0.3.5 && ( cd ~/bin && rm -f mill && ln -s mill-0.3.5 mill)'; fi
+- JAVAOPTS="-Xmx2048m" mill unitTest
+
+cache:
+  directories:
+  - $HOME/.coursier
