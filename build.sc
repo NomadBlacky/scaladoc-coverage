@@ -21,6 +21,12 @@ class CoreModule(crossVersion: String) extends CrossScalaModule with ScalafmtMod
   }
 }
 
+object cli extends Cross[CLIModule](scalaVersions: _*)
+class CLIModule(crossVersion: String) extends CrossScalaModule with ScalafmtModule {
+  override def moduleDeps = Seq(core())
+  override def crossScalaVersion = crossVersion
+}
+
 def unitTest(scalaVersion: String = sys.env("TRAVIS_SCALA_VERSION")) = T.command {
   core(scalaVersion).test.test()
 }
