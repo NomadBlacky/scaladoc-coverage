@@ -37,6 +37,16 @@ object DocumentableExtractorTest extends TestSuite {
           |    */
         """.stripMargin.trim
       )
+    ),
+    Documentable(
+      Some("com.sample"),
+      Some("Sample"),
+      None
+    ),
+    Documentable(
+      Some("com.sample"),
+      Some("Sample"),
+      None
     )
   )
 
@@ -66,6 +76,16 @@ object DocumentableExtractorTest extends TestSuite {
         Paths.get(url.getPath), StandardCharsets.UTF_8
       )
       val expected = List(
+        Documentable(
+          Some("com.sample"),
+          None,
+          None
+        ),
+        Documentable(
+          Some("com.sample"),
+          Some("Obj"),
+          None
+        ),
         Documentable(
           Some("com.sample"),
           Some("Obj.InnerClass"),

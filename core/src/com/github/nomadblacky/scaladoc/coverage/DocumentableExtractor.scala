@@ -9,6 +9,19 @@ import scala.meta.parsers.Parsed
 import scala.meta.{Defn, Pkg, Source, Tree}
 
 object DocumentableExtractor {
+  implicit class RichTree(t: Tree) {
+    def isDocumentable: Boolean = t match {
+      case _: Defn.Class => true
+      case _: Defn.Object => true
+      case _: Defn.Trait => true
+      case _: Defn.Type => true
+      case _: Defn.Def => true
+      case _: Defn.Val => true
+      case _: Defn.Var => true
+      case _ => false
+    }
+  }
+
   def extractFromFile(path: Path, charset: Charset): List[Documentable] = {
     val input = Input.File(path, charset)
     input.parse[Source] match {
@@ -23,13 +36,21 @@ object DocumentableExtractor {
     val comments = AssociatedComments(tree)
 
     def parsedScaladocComment(t: Tree): Option[Documentable] =
-      comments.leading(t).filter(_.isScaladoc).toList match {
-        case List(scaladocComment) =>
+      (t.isDocumentable, comments.leading(t).filter(_.isScaladoc).toList) match {
+        case (true, List(scaladocComment)) =>
           Some(
             Documentable(
               pkg = packageOf(t),
               part = partOf(t),
               docText = Some(scaladocComment.syntax)
+            )
+          )
+        case (true, _) =>
+          Some(
+            Documentable(
+              pkg = packageOf(t),
+              part = partOf(t),
+              docText = None
             )
           )
         case _ => None
