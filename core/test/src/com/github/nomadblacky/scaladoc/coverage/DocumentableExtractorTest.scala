@@ -13,6 +13,7 @@ object DocumentableExtractorTest extends TestSuite {
   val expected = List(
     Documentable(
       Some("com.sample"),
+      None,
       Some(
         """/**
           |  * The sample class.
@@ -22,10 +23,12 @@ object DocumentableExtractorTest extends TestSuite {
     ),
     Documentable(
       Some("com.sample"),
+      Some("Sample"),
       Some("""/** This value is "foo" */""")
     ),
     Documentable(
       Some("com.sample"),
+      Some("Sample"),
       Some(
         """/**
           |    * Execute anything.
@@ -52,6 +55,27 @@ object DocumentableExtractorTest extends TestSuite {
       val url = getClass.getResource("Sample.scala")
       val actual = DocumentableExtractor.extractFromFile(
         Paths.get(url.getPath), StandardCharsets.UTF_8
+      )
+
+      assert(expected == actual)
+    }
+
+    "extractFromFile from InnerClass.scala" - {
+      val url = getClass.getResource("InnerClass.scala")
+      val actual = DocumentableExtractor.extractFromFile(
+        Paths.get(url.getPath), StandardCharsets.UTF_8
+      )
+      val expected = List(
+        Documentable(
+          Some("com.sample"),
+          Some("Obj.InnerClass"),
+          Some(
+            """/**
+              |      * This is a method.
+              |      */
+            """.stripMargin.trim
+          )
+        )
       )
 
       assert(expected == actual)
