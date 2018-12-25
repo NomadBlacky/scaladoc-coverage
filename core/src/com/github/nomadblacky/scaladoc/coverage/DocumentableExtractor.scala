@@ -6,7 +6,7 @@ import java.nio.file.Path
 import scala.meta.contrib._
 import scala.meta.inputs.Input
 import scala.meta.parsers.Parsed
-import scala.meta.{Source, Tree}
+import scala.meta.{Pkg, Source, Tree}
 
 object DocumentableExtractor {
   def extractFromFile(path: Path, charset: Charset): List[Documentable] = {
@@ -25,7 +25,12 @@ object DocumentableExtractor {
     def parsedScaladocComment(t: Tree): Option[Documentable] =
       comments.leading(t).filter(_.isScaladoc).toList match {
         case List(scaladocComment) =>
-          Some(Documentable(scaladocComment.syntax))
+          Some(
+            Documentable(
+              packageOf(t),
+              Some(scaladocComment.syntax)
+            )
+          )
         case _ => None
       }
 
@@ -37,6 +42,18 @@ object DocumentableExtractor {
 
     ext(tree)
   }
+
+  private def packageOf(t: Tree): Option[String] =
+    t.ancestors.collect {
+      case pkg: Pkg => pkg.ref.toString()
+      case pkgObj: Pkg.Object => pkgObj.name.value
+    } match {
+      case Nil => None
+      case names => Some(names.mkString("."))
+    }
 }
 
-case class Documentable(text: String)
+case class Documentable(
+  pkg: Option[String],
+  docText: Option[String]
+)

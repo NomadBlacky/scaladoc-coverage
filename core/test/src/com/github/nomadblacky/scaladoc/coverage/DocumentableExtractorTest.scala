@@ -12,21 +12,28 @@ import scala.meta.inputs.Input
 object DocumentableExtractorTest extends TestSuite {
   val expected = List(
     Documentable(
-      """/**
-        |  * The sample class.
-        |  */
-      """.stripMargin.trim
+      Some("com.sample"),
+      Some(
+        """/**
+          |  * The sample class.
+          |  */
+        """.stripMargin.trim
+      )
     ),
     Documentable(
-      """/** This value is "foo" */"""
+      Some("com.sample"),
+      Some("""/** This value is "foo" */""")
     ),
     Documentable(
-      """/**
-        |  * Execute anything.
-        |  *
-        |  * @param n Double value
-        |  */
-      """.stripMargin.trim
+      Some("com.sample"),
+      Some(
+        """/**
+          |  * Execute anything.
+          |  *
+          |  * @param n Double value
+          |  */
+        """.stripMargin.trim
+      )
     )
   )
 
