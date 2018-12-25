@@ -9,18 +9,18 @@ import scala.io.{Source => Resource}
 import scala.meta.Source
 import scala.meta.inputs.Input
 
-object ScaladocExtractorTest extends TestSuite {
+object DocumentableExtractorTest extends TestSuite {
   val expected = List(
-    ScaladocComment(
+    Documentable(
       """/**
         |  * The sample class.
         |  */
       """.stripMargin.trim
     ),
-    ScaladocComment(
+    Documentable(
       """/** This value is "foo" */"""
     ),
-    ScaladocComment(
+    Documentable(
       """/**
         |  * Execute anything.
         |  *
@@ -36,14 +36,14 @@ object ScaladocExtractorTest extends TestSuite {
       val code = Resource.fromURL(url).mkString
       val input = Input.VirtualFile(url.getPath, code)
       val tree = input.parse[Source].get
-      val actual = ScaladocExtractor.extractFromTree(tree)
+      val actual = DocumentableExtractor.extractFromTree(tree)
 
       assert(expected.head == actual.head)
     }
 
     "extractFromFile from Sample.scala" - {
       val url = getClass.getResource("Sample.scala")
-      val actual = ScaladocExtractor.extractFromFile(
+      val actual = DocumentableExtractor.extractFromFile(
         Paths.get(url.getPath), StandardCharsets.UTF_8
       )
 

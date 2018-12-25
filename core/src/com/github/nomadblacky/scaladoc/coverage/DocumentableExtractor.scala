@@ -8,8 +8,8 @@ import scala.meta.inputs.Input
 import scala.meta.parsers.Parsed
 import scala.meta.{Source, Tree}
 
-object ScaladocExtractor {
-  def extractFromFile(path: Path, charset: Charset): List[ScaladocComment] = {
+object DocumentableExtractor {
+  def extractFromFile(path: Path, charset: Charset): List[Documentable] = {
     val input = Input.File(path, charset)
     input.parse[Source] match {
       case Parsed.Success(tree) =>
@@ -19,17 +19,17 @@ object ScaladocExtractor {
     }
   }
 
-  def extractFromTree(tree: Tree): List[ScaladocComment] = {
+  def extractFromTree(tree: Tree): List[Documentable] = {
     val comments = AssociatedComments(tree)
 
-    def parsedScaladocComment(t: Tree): Option[ScaladocComment] =
+    def parsedScaladocComment(t: Tree): Option[Documentable] =
       comments.leading(t).filter(_.isScaladoc).toList match {
         case List(scaladocComment) =>
-          Some(ScaladocComment(scaladocComment.syntax))
+          Some(Documentable(scaladocComment.syntax))
         case _ => None
       }
 
-    def ext(t: Tree): List[ScaladocComment] =
+    def ext(t: Tree): List[Documentable] =
       t.children.foldLeft(parsedScaladocComment(t).toList) {
         case (extracted, childTree) =>
           extracted ::: ext(childTree)
@@ -39,4 +39,4 @@ object ScaladocExtractor {
   }
 }
 
-case class ScaladocComment(text: String)
+case class Documentable(text: String)
