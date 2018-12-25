@@ -9,7 +9,7 @@ object Main {
     val sourceFiles = args.map(Paths.get(_)).toList
     for {
       file <- sourceFiles
-      scaladoc <- ScaladocExtractor.extractFromFile(file, StandardCharsets.UTF_8)
+      scaladoc <- DocumentableExtractor.extractFromFile(file, StandardCharsets.UTF_8)
     } {
       println(scaladoc)
     }
