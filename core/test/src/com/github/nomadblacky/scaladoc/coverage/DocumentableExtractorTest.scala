@@ -14,6 +14,7 @@ object DocumentableExtractorTest extends TestSuite {
     Documentable(
       Some("com.sample"),
       None,
+      Some("Sample"),
       Some(
         """/**
           |  * The sample class.
@@ -24,11 +25,13 @@ object DocumentableExtractorTest extends TestSuite {
     Documentable(
       Some("com.sample"),
       Some("Sample"),
+      Some("value"),
       Some("""/** This value is "foo" */""")
     ),
     Documentable(
       Some("com.sample"),
       Some("Sample"),
+      Some("method"),
       Some(
         """/**
           |    * Execute anything.
@@ -41,11 +44,13 @@ object DocumentableExtractorTest extends TestSuite {
     Documentable(
       Some("com.sample"),
       Some("Sample"),
+      Some("nonDocumentedValue"),
       None
     ),
     Documentable(
       Some("com.sample"),
       Some("Sample"),
+      Some("nonDocumentedMethod"),
       None
     )
   )
@@ -79,16 +84,19 @@ object DocumentableExtractorTest extends TestSuite {
         Documentable(
           Some("com.sample"),
           None,
-          None
-        ),
-        Documentable(
-          Some("com.sample"),
           Some("Obj"),
           None
         ),
         Documentable(
           Some("com.sample"),
+          Some("Obj"),
+          Some("InnerClass"),
+          None
+        ),
+        Documentable(
+          Some("com.sample"),
           Some("Obj.InnerClass"),
+          Some("method"),
           Some(
             """/**
               |      * This is a method.

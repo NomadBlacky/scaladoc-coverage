@@ -6,7 +6,7 @@ import java.nio.file.Path
 import scala.meta.contrib._
 import scala.meta.inputs.Input
 import scala.meta.parsers.Parsed
-import scala.meta.{Defn, Pkg, Source, Tree}
+import scala.meta.{Defn, Member, Pkg, Source, Tree}
 
 object DocumentableExtractor {
   implicit class RichTree(t: Tree) {
@@ -19,6 +19,17 @@ object DocumentableExtractor {
       case _: Defn.Val => true
       case _: Defn.Var => true
       case _ => false
+    }
+
+    def name: Option[String] = t match {
+      case d: Defn.Class => Some(d.name.value)
+      case d: Defn.Object => Some(d.name.value)
+      case d: Defn.Trait => Some(d.name.value)
+      case d: Defn.Type => Some(d.name.value)
+      case d: Defn.Def => Some(d.name.value)
+      case d: Defn.Val => d.pats.collectFirst { case m: Member => m.name.value }
+      case d: Defn.Var => d.pats.collectFirst { case m: Member => m.name.value }
+      case _ => Some("")
     }
   }
 
@@ -42,6 +53,7 @@ object DocumentableExtractor {
             Documentable(
               pkg = packageOf(t),
               part = partOf(t),
+              name = t.name,
               docText = Some(scaladocComment.syntax)
             )
           )
@@ -50,6 +62,7 @@ object DocumentableExtractor {
             Documentable(
               pkg = packageOf(t),
               part = partOf(t),
+              name = t.name,
               docText = None
             )
           )
@@ -83,10 +96,12 @@ object DocumentableExtractor {
       case Nil => None
       case names => Some(names.mkString("."))
     }
+
 }
 
 case class Documentable(
   pkg: Option[String],
   part: Option[String],
+  name: Option[String],
   docText: Option[String]
 )
