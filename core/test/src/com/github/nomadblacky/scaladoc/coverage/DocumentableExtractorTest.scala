@@ -28,10 +28,10 @@ object DocumentableExtractorTest extends TestSuite {
       Some("com.sample"),
       Some(
         """/**
-          |  * Execute anything.
-          |  *
-          |  * @param n Double value
-          |  */
+          |    * Execute anything.
+          |    *
+          |    * @param n Double value
+          |    */
         """.stripMargin.trim
       )
     )
@@ -45,7 +45,7 @@ object DocumentableExtractorTest extends TestSuite {
       val tree = input.parse[Source].get
       val actual = DocumentableExtractor.extractFromTree(tree)
 
-      assert(expected.head == actual.head)
+      assert(expected == actual)
     }
 
     "extractFromFile from Sample.scala" - {
@@ -54,7 +54,7 @@ object DocumentableExtractorTest extends TestSuite {
         Paths.get(url.getPath), StandardCharsets.UTF_8
       )
 
-      assert(expected.head == actual.head)
+      assert(expected == actual)
     }
   }
 }
